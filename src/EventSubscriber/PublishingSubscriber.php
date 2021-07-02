@@ -3,12 +3,31 @@
 namespace App\EventSubscriber;
 
 use App\Entity\Post;
+use App\Message\SendNewsletterOnPublishMessage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\Workflow\Event\GuardEvent;
 
 class PublishingSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @var MessageBusInterface
+     */
+    private $messageBus;
+
+    /**
+     * @var array
+     */
+    private $newsletterEmails;
+
+
+    public function __construct(MessageBusInterface $messageBus, array $newsletterEmails)
+    {
+        $this->messageBus = $messageBus;
+        $this->newsletterEmails = $newsletterEmails;
+    }
+
     public function beforePublishGuard(GuardEvent $event)
     {
 
@@ -32,6 +51,8 @@ class PublishingSubscriber implements EventSubscriberInterface
 
         $this->updateRssFeed($post);
         $this->addPostToSearchIndex($post);
+
+        $this->messageBus->dispatch(new SendNewsletterOnPublishMessage($this->newsletterEmails, $post));
     }
 
     public static function getSubscribedEvents()
