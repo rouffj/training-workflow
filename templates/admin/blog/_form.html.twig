@@ -12,6 +12,11 @@
 {% endif %}
 
 {{ form_start(form, {attr: attr|default({})}) }}
+
+
+    {% for blocker in workflow_transition_blockers(post, 'publish')  %}
+        <p style="color: red;">{{ blocker.message }}</p>
+    {% endfor %}
     {{ form_widget(form) }}
 
     <button type="submit" class="{{ button_css|default("btn btn-primary") }}">

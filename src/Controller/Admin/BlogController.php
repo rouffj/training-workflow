@@ -145,11 +145,15 @@ class BlogController extends AbstractController
 
         if ($request->request->has('publish')) {
             dump($post, $blogPublishingStateMachine->can($post, 'publish'));
-            $blogPublishingStateMachine->apply($post, 'publish');
+            if ($blogPublishingStateMachine->can($post, 'publish')) {
+                $blogPublishingStateMachine->apply($post, 'publish');
+            }
         }
 
         if ($request->request->has('archive')) {
-            $blogPublishingStateMachine->apply($post, 'archive');
+            if ($blogPublishingStateMachine->can($post, 'publish')) {
+                $blogPublishingStateMachine->apply($post, 'publish');
+            }
         }
 
         if ($form->isSubmitted() && $form->isValid()) {
