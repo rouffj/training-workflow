@@ -10,6 +10,8 @@
         button_label: 'action.save'|trans,
         include_back_to_home_link: true,
     }) }}
+
+    <p>The state of this post is: <strong>{{ post.marking() }}</strong>.</p>
 {% endblock %}
 
 {% block sidebar %}

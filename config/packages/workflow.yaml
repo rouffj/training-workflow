@@ -9,7 +9,7 @@ framework:
                 - archived
             transitions:
                 publish:
-                    from: drafted
+                    from: [drafted, archived]
                     to: published
                 archive:
                     from: published
