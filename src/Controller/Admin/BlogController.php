@@ -21,6 +21,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Workflow\WorkflowInterface;
 
 /**
  * Controller used to manage blog contents in the backend.
@@ -130,12 +131,29 @@ class BlogController extends AbstractController
      * @Route("/{id<\d+>}/edit", methods="GET|POST", name="admin_post_edit")
      * @IsGranted("edit", subject="post", message="Posts can only be edited by their authors.")
      */
-    public function edit(Request $request, Post $post): Response
+    public function edit(Request $request, Post $post, WorkflowInterface $blogPublishingStateMachine): Response
     {
         $form = $this->createForm(PostType::class, $post);
         $form->handleRequest($request);
 
+        //dump($blogPublishingStateMachine->can($post, 'archived'));
+        //$post->setMarking('published');
+        //dump($blogPublishingStateMachine, $post);
+        //dump($post, $blogPublishingStateMachine->can($post, 'archive'));
+        //$blogPublishingStateMachine->apply($post, 'archive');
+        //dump($post, $blogPublishingStateMachine->can($post, 'archive'));
+
+        if ($request->request->has('publish')) {
+            dump($post, $blogPublishingStateMachine->can($post, 'publish'));
+            $blogPublishingStateMachine->apply($post, 'publish');
+        }
+
+        if ($request->request->has('archive')) {
+            $blogPublishingStateMachine->apply($post, 'archive');
+        }
+
         if ($form->isSubmitted() && $form->isValid()) {
+            //dump('save entity');
             $this->getDoctrine()->getManager()->flush();
 
             $this->addFlash('success', 'post.updated_successfully');

@@ -18,9 +18,23 @@
         <i class="fa fa-save" aria-hidden="true"></i> {{ button_label|default('label.create_post'|trans) }}
     </button>
 
+{% if workflow_can(post, 'publish') %}
+    <button type="submit" class="btn btn-primary" name="publish">
+        <i class="fa fa-publish" aria-hidden="true"></i> PUBLISH
+    </button>
+{% endif %}
+
+{% if workflow_can(post, 'archive') %}
+    <button type="submit" class="btn btn-primary"  name="archive">
+        <i class="fa fa-publish" aria-hidden="true"></i> ARCHIVE
+    </button>
+{% endif %}
+
     {% if include_back_to_home_link|default(false) %}
         <a href="{{ path('admin_post_index') }}" class="btn btn-link">
             <i class="fa fa-list-alt" aria-hidden="true"></i> {{ 'action.back_to_list'|trans }}
         </a>
     {% endif %}
+
+
 {{ form_end(form) }}

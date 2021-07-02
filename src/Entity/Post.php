@@ -115,6 +115,11 @@ class Post
      */
     private $tags;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $marking;
+
     public function __construct()
     {
         $this->publishedAt = new \DateTime();
@@ -222,5 +227,17 @@ class Post
     public function getTags(): Collection
     {
         return $this->tags;
+    }
+
+    public function getMarking(): ?string
+    {
+        return $this->marking;
+    }
+
+    public function setMarking(?string $marking): self
+    {
+        $this->marking = $marking;
+
+        return $this;
     }
 }

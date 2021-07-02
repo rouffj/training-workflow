@@ -1,0 +1,16 @@
+framework:
+    workflows:
+        blog_publishing:
+            type: state_machine
+            supports: App\Entity\Post
+            places:
+                - drafted
+                - published
+                - archived
+            transitions:
+                publish:
+                    from: drafted
+                    to: published
+                archive:
+                    from: published
+                    to: archived
